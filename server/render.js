@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { existsSync } from 'fs'
 import { createElement } from 'react'
-import { renderToString, renderToStaticMarkup } from 'react-dom/server'
+import { renderToNodeStream, renderToStaticNodeStream } from 'react-dom/server'
 import send from 'send'
 import generateETag from 'etag'
 import fresh from 'fresh'
@@ -73,7 +73,7 @@ async function doRender (req, res, pathname, query, {
       router: new Router(pathname, query, asPath)
     })
 
-    const render = staticMarkup ? renderToStaticMarkup : renderToString
+    const render = staticMarkup ? renderToStaticNodeStream : renderToNodeStream
 
     let html
     let head
@@ -117,7 +117,7 @@ async function doRender (req, res, pathname, query, {
     ...docProps
   })
 
-  return '<!DOCTYPE html>' + renderToStaticMarkup(doc)
+  return '<!DOCTYPE html>' + renderToStaticNodeStream(doc)
 }
 
 export async function renderScript (req, res, page, opts) {
